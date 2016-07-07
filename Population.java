@@ -112,7 +112,6 @@ public class Population {
 		}
 	}
 
-    // TODO: 7/6/16 Here
     // TODO: 7/6/16 SpeedUp Algorithm
     /**
      * @return the fittest CellBoard in the population

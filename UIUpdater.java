@@ -1,13 +1,17 @@
-// Author: Sean Godard
-// Purpose: used to update the display at regular intervals 
+/**
+ * Used to update the simulation display at regular intervals.
+ * @author Sean Godard
+ */
 
+// TODO: 7/6/16 Fix this so that all the graphics run on the main thread and use callbacks
 public class UIUpdater extends Thread {
-	// Variables
-	private static boolean DONE = false; // Let's the thread know to stop
+	private static boolean DONE = false;
 	private static int FRAME_DELAY = 100; // How long to wait before updating the next frame
 
 	@Override
-	// @effect: regularly update the GUI as long as it is not paused
+    /**
+     * Regularly update the GUI as long as it is not paused.
+     */
 	public void run() {
 		while (!DONE) {
 			// protect access to this area with semaphore (competing with the event handler when this is to be reset)
@@ -18,8 +22,8 @@ public class UIUpdater extends Thread {
 		}
 	}
 
-	// @effect: when called it sets the thread to stop updating the UI
-	public void done() {
-		DONE = true;
-	}
+    /**
+     * when called it sets the thread to stop updating the simulation.
+     */
+	public synchronized void done() { DONE = true; }
 }
