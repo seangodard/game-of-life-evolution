@@ -6,6 +6,10 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Represent a population of CellBoards for use with the genetics algorithm.
+ * @author Sean Godard
+ */
 public class Population {
     private int sim_lifespan, max_size, size = 0;
     private static int cell_start_radius = 0;

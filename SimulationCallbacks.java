@@ -2,7 +2,7 @@
  * Holds the functions to respond to simulation events. (Serve as callbacks)
  * @author Sean Godard
  */
-public interface SimulationEvent {
+public interface SimulationCallbacks {
 
     /**
      * @param cell_board Respond the the finishing of a CellBoard

@@ -3,27 +3,53 @@
  * @author Sean Godard
  */
 
-// TODO: 7/6/16 Fix this so that all the graphics run on the main thread and use callbacks
 public class UIUpdater extends Thread {
-	private static boolean DONE = false;
-	private static int FRAME_DELAY = 100; // How long to wait before updating the next frame
+	private boolean done = false;
+    private boolean paused = true;
+	private int FRAME_DELAY = 100; // How long to wait before updating the next frame (milliseconds)
+    private UIUpdaterCallbacks callbacks;
+
+	public UIUpdater(UIUpdaterCallbacks callbacks) {
+        this.callbacks = callbacks;
+    }
 
 	@Override
     /**
      * Regularly update the GUI as long as it is not paused.
      */
 	public void run() {
-		while (!DONE) {
-			// protect access to this area with semaphore (competing with the event handler when this is to be reset)
-			try {Main.UI.acquire();} catch (InterruptedException e1) {e1.printStackTrace();}
-			Main.displayNext();
-			Main.UI.release();
-			try {Thread.sleep(FRAME_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
+        super.run();
+
+		while (!done) {
+            if (paused) {
+                try {
+                    synchronized (this) {  wait();  }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            callbacks.showNext();
+            try { this.sleep(FRAME_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
 
     /**
      * when called it sets the thread to stop updating the simulation.
      */
-	public synchronized void done() { DONE = true; }
+	public synchronized void done() { done = true; }
+
+    /**
+     * Let the thread know to pause its execution.
+     */
+    public synchronized void pause() { this.paused = true; }
+
+    /**
+     * Let the thread know to resume its execution.
+     */
+    public synchronized void cont() { this.paused = false; }
+
+    /**
+     * @return If the thread is set to paused
+     */
+    public boolean isPaused() { return paused; }
 }

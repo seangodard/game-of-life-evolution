@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:id="main_layout" fx:controller="MainController">
+    <top>
+        <MenuBar>
+            <Menu text="File">
+                <MenuItem text="Open File...     " onAction="#openFile"></MenuItem>
+            </Menu>
+        </MenuBar>
+    </top>
+    <left>
+        <VBox fx:id="parameter_bar">
+            <VBox>
+                <Label text="Cell Start Radius:"></Label>
+                <HBox fx:id="radius_slider">
+                    <Slider min="1" max="30" value="2" majorTickUnit="1" blockIncrement="1"> </Slider>
+                    <Label text=""></Label>
+                </HBox>
+            </VBox>
+            <VBox>
+                <Label text="Simulation Lifespan:"></Label>
+                <HBox fx:id="sim_lifespan_slider">
+                    <Slider min="1" max="10000" value="100" majorTickUnit="1" blockIncrement="1"></Slider>
+                    <Label text="100"></Label>
+                </HBox>
+            </VBox>
+            <VBox>
+                <Label text="Board Population Size:"></Label>
+                <HBox fx:id="board_pop_slider">
+                    <Slider min="1" max="10000" value="200" majorTickUnit="1" blockIncrement="1"></Slider>
+                    <Label text="200"></Label>
+                </HBox>
+            </VBox>
+            <VBox>
+                <Label text="Mutation Rate:"></Label>
+                <HBox fx:id="mut_rate_slider">
+                    <Slider min="0" max="1" value="0.15" majorTickUnit=".001" blockIncrement=".001"></Slider>
+                    <Label text="0.15"></Label>
+                </HBox>
+            </VBox>
+            <VBox>
+                <Label text="Number of Simulation Generations:"></Label>
+                <HBox fx:id="sim_gen_slider">
+                    <Slider min="1" max="10000" value="250" majorTickUnit="1" blockIncrement="1"></Slider>
+                    <Label text="250"></Label>
+                </HBox>
+            </VBox>
+            <Button text="Compute Genetics Best!" onAction="#computeGeneticsBest"></Button>
+        </VBox>
+    </left>
+    <center>
+        <VBox fx:id="main">
+            <StackPane fx:id="overlay" alignment="TOP_CENTER" onMouseClicked="#simulationClicked">
+                <ImageView fx:id="simulation_image"></ImageView>
+                <Label fx:id="fitness_label"></Label>
+            </StackPane>
+            <VBox fx:id="tray"></VBox>
+        </VBox>
+    </center>
+</BorderPane>

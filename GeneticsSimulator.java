@@ -10,10 +10,9 @@ public class GeneticsSimulator implements Runnable {
     private int population_size;
     private double mutation_rate;
     private int genetics_generations;
-    private SimulationEvent callbacks;
+    private SimulationCallbacks callbacks;
 
     /**
-     *
      * @param cell_start_radius the radius around the origin that the initial cells should fit in
      * @param simulation_lifespan the maximum number of iterations the initial boards will be run through to determine
      *     fitness
@@ -23,7 +22,7 @@ public class GeneticsSimulator implements Runnable {
      * @param callbacks The implemented interface to respond to progress updates and the completion of the simulation.
      */
     public GeneticsSimulator(int cell_start_radius, int simulation_lifespan, int population_size,
-        double mutation_rate, int genetics_generations, SimulationEvent callbacks) {
+        double mutation_rate, int genetics_generations, SimulationCallbacks callbacks) {
 
         this.cell_start_radius = cell_start_radius;
         this.simulation_lifespan = simulation_lifespan;
