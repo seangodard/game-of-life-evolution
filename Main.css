@@ -1,0 +1,94 @@
+* {
+    -fx-font-family: "Calibri";
+}
+
+#parameter_bar * {
+    -fx-font-size: 12px;
+}
+
+#parameter_bar {
+    -fx-border-color: rgba(0,0,0,.4);
+    -fx-border-width: 0 1 0 0;
+}
+
+#tray {
+    -fx-border-color: rgba(0,0,0,.4);
+    -fx-border-width: 1 0 1 0;
+}
+
+#top_menu {
+    -fx-border-color: rgba(0,0,0,.4);
+    -fx-border-width: 0 0 1 0;
+}
+
+#fitness_label {
+    -fx-font-size: 30px;
+}
+
+#tray *, #parameter_bar *, #top_menu *{
+    -fx-text-fill: #FFFFFF;
+}
+
+#tray, #parameter_bar, #top_menu, .context-menu {
+    -fx-background-color: #444444;
+}
+
+Slider .thumb {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 1.0em;
+    -fx-padding: 0.583333em;
+    -fx-effect: dropshadow(two-pass-box , rgba(0, 0, 0, 0.1), 5, 0.0 , 0, 2);
+}
+
+Slider .track {
+    -fx-padding: 0.1em;
+}
+
+#parameter_bar * {
+    -fx-alignment: center;
+}
+
+Button, Slider .track {
+    -fx-background-color: #00A000;
+}
+
+Button:hover {
+    -fx-background-color: #009000;
+}
+
+#fitness_label {
+    -fx-padding: 5 0 0 0;
+}
+
+.progress-bar {
+    -fx-indeterminate-bar-escape: true;
+    -fx-indeterminate-bar-flip: true;
+    -fx-indeterminate-bar-animation-time: 2;
+}
+
+.progress-bar .bar {
+    -fx-background-color: #00A000;
+    -fx-background-insets: 2;
+    -fx-padding: 9;
+}
+
+.progress-bar:indeterminate .bar {
+    -fx-background-color: #F8F8F8;
+}
+
+.progress-bar .track {
+    -fx-background-color: #F8F8F8;
+    -fx-background-insets: 0, 0 0 1 0, 1 1 2 1;
+}
+
+MenuBar {
+    -fx-padding: 0 0 0 10px;
+    -fx-alignment: center-left;
+}
+
+.menu-item {
+    -fx-padding: 3 10 3 15;
+    -fx-border-color: #FFFFFF;
+    -fx-border: 1 1 1 1;
+}
+

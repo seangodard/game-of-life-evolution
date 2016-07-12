@@ -70,7 +70,7 @@ public class GeneticsSimulator implements Runnable {
         }
         // Only return the value if the simulation completed
         if (!DONE) {
-            callbacks.finished(p.fittest());
+            callbacks.finished(p.fittest(), p.fittestFitness());
             callbacks.progress(1);
         }
     }

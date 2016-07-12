@@ -17,7 +17,7 @@ public class CellBoard {
     /**
      * Empty constructor.
      */
-	public CellBoard(){};
+	public CellBoard(){}
 
     /**
      * Create a randomly populated Cell Board

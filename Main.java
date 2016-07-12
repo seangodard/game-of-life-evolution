@@ -26,17 +26,18 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
-import javafx.scene.image.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -48,16 +49,18 @@ public class Main extends Application {
     protected static MainController main_controller = new MainController();
 
     private static int CELL_SIZE = 4, NUM_CELLS_DISPLAY = 161; // display number is odd so that center axis fits nicely
-    private static int WIDTH = CELL_SIZE * NUM_CELLS_DISPLAY, HEIGHT = CELL_SIZE * NUM_CELLS_DISPLAY;
+    protected static int SIM_WIDTH = CELL_SIZE * NUM_CELLS_DISPLAY, SIM_HEIGHT = CELL_SIZE * NUM_CELLS_DISPLAY;
 
-    private int SCREEN_HEIGHT = 900;
-    private int SCREEN_WIDTH = 1000;
-    private static Color CELL_COLOR = new Color(0,128,0);
-    private static Color BACKGROUND_COLOR = new Color(245,245,245);
-    private int SIDEBAR_SPACING = 4;
-    private double SIDEBAR_WIDTH = 250;
-    private double TRAY_HEIGHT = 20;
-//    private static Font fitnessFont = new Font("Calibri",30);
+    private static Color CELL_COLOR = new Color(0, 160,0);
+//    private static Color BACKGROUND_COLOR = new Color(245,245,245);
+    private static Color BACKGROUND_COLOR = new Color(248, 248, 248);
+    protected static int SIDEBAR_WIDTH = 250;
+    protected static int SIDEBAR_PADDING = 14;
+    protected static int TRAY_HEIGHT = 20;
+    protected static int MENU_HEIGHT = 30;
+
+    protected static int SCREEN_HEIGHT = SIM_HEIGHT + TRAY_HEIGHT + MENU_HEIGHT;
+    protected static int SCREEN_WIDTH = SIDEBAR_WIDTH + SIM_WIDTH;
 
     /**
      * launch the application
@@ -75,8 +78,11 @@ public class Main extends Application {
 	@Override
 	public void start(final Stage stage) throws Exception {
 		this.stage = stage;
+
 		// Initialize window settings
 		this.stage.setTitle("Conway's Game of Life + Genetics!");
+
+        this.setUserAgentStylesheet("Main.css");
 
         // Create the environment for the display with FXML and initialize the main_controller for the UI
 		loader = new FXMLLoader();
@@ -85,9 +91,10 @@ public class Main extends Application {
         // Setup the main controller with its callback functions
 		loader.setController(main_controller);
 
-        Scene s = new Scene(root, SCREEN_HEIGHT, SCREEN_WIDTH);
+        Scene s = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
 		this.stage.setScene(s);
 		this.stage.show();
+
     }
 
     /**
@@ -131,12 +138,11 @@ public class Main extends Application {
 
             per = ((Label) tray_combo.getChildren().get(1));
             String tmp;
-            if (percentage == 1) { tmp = "Done!"; }
+            if (percentage == 1) { tmp = " Done!"; }
             else { tmp = String.format(" %.0f%%", percentage*100); }
             per.setText(tmp);
         }
 
-        // TODO: 7/9/16 Move to the css
         per.setMinWidth(.25 * tray_combo.getWidth());
         bar.setMinWidth(.75 * tray_combo.getWidth());
     }
@@ -179,10 +185,10 @@ public class Main extends Application {
      */
     protected static void setSimulationImage(ImageView img_view, CellBoard sim) {
         // create the buffered image for drawing the next simulation image on
-        BufferedImage bufImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage bufImage = new BufferedImage(SIM_WIDTH, SIM_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         Graphics2D drawOn = bufImage.createGraphics();
         drawOn.setColor(BACKGROUND_COLOR);
-        drawOn.fillRect(0, 0, WIDTH, HEIGHT);
+        drawOn.fillRect(0, 0, SIM_WIDTH, SIM_HEIGHT);
         drawOn.setColor(CELL_COLOR);
 
         Point tempPoint;
@@ -194,8 +200,9 @@ public class Main extends Application {
                 // translate to a point and only draw if its valid
                 tempPoint = new Point(x,y);
                 if (sim.contains(tempPoint)) {
-                    // Translate to standard xy coordinates so that it's not flipped because of the way that java does coordinates
-                    drawOn.fillRect(x*CELL_SIZE+winRadius*CELL_SIZE, -y*CELL_SIZE+winRadius*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                    // Translate to standard xy coordinates to the way that java does coordinates
+                    drawOn.fillRect(x*CELL_SIZE+winRadius*CELL_SIZE, -y*CELL_SIZE+winRadius*CELL_SIZE, CELL_SIZE,
+                        CELL_SIZE);
                 }
             }
         }
@@ -207,8 +214,8 @@ public class Main extends Application {
     }
 
     /**
-	 * Called when the application is closed, in this case calls on the main main_controller to stop anything it might have
-	 * 	been doing.
+	 * Called when the application is closed, in this case calls on the main main_controller to stop anything it might
+     * 	have been doing.
 	 */
 	@Override
 	public void stop() {

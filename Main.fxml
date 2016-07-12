@@ -14,19 +14,19 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:id="main_layout" fx:controller="MainController">
     <top>
-        <MenuBar>
+        <MenuBar fx:id="top_menu">
             <Menu text="File">
                 <MenuItem text="Open File...     " onAction="#openFile"></MenuItem>
             </Menu>
         </MenuBar>
     </top>
     <left>
-        <VBox fx:id="parameter_bar">
+        <VBox fx:id="parameter_bar" alignment="TOP_CENTER">
             <VBox>
                 <Label text="Cell Start Radius:"></Label>
                 <HBox fx:id="radius_slider">
                     <Slider min="1" max="30" value="2" majorTickUnit="1" blockIncrement="1"> </Slider>
-                    <Label text=""></Label>
+                    <Label text="2"></Label>
                 </HBox>
             </VBox>
             <VBox>
@@ -51,13 +51,13 @@
                 </HBox>
             </VBox>
             <VBox>
-                <Label text="Number of Simulation Generations:"></Label>
+                <Label text="Simulation Generations:"></Label>
                 <HBox fx:id="sim_gen_slider">
                     <Slider min="1" max="10000" value="250" majorTickUnit="1" blockIncrement="1"></Slider>
                     <Label text="250"></Label>
                 </HBox>
             </VBox>
-            <Button text="Compute Genetics Best!" onAction="#computeGeneticsBest"></Button>
+            <Button text="Compute Genetic Best!" onAction="#computeGeneticsBest"></Button>
         </VBox>
     </left>
     <center>
@@ -65,6 +65,7 @@
             <StackPane fx:id="overlay" alignment="TOP_CENTER" onMouseClicked="#simulationClicked">
                 <ImageView fx:id="simulation_image"></ImageView>
                 <Label fx:id="fitness_label"></Label>
+                <VBox fx:id="simulation_shadow"></VBox>
             </StackPane>
             <VBox fx:id="tray"></VBox>
         </VBox>

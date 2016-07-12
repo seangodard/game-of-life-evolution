@@ -1,11 +1,17 @@
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.*;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import java.awt.*;
 import java.io.File;
@@ -29,10 +35,14 @@ public class MainController implements Initializable {
     @FXML protected HBox mut_rate_slider;
     @FXML protected HBox sim_gen_slider;
     @FXML protected ImageView simulation_image;
+    @FXML protected VBox simulation_shadow;
     @FXML protected VBox tray;
     @FXML protected Label fitness_label;
     @FXML protected VBox parameter_bar;
     @FXML protected BorderPane main_layout;
+    @FXML protected StackPane overlay;
+    @FXML protected VBox main;
+    @FXML protected MenuBar top_menu;
 
     protected UIUpdater sim_graphic_update_thread;
 
@@ -66,6 +76,42 @@ public class MainController implements Initializable {
         Main.initializeSlider(board_pop_slider, false);
         Main.initializeSlider(mut_rate_slider, true);
         Main.initializeSlider(sim_gen_slider, false);
+
+        // Set the start sizes for the layout
+        parameter_bar.setPrefWidth(Main.SIDEBAR_WIDTH);
+        parameter_bar.setMaxWidth(Main.SIDEBAR_WIDTH);
+        parameter_bar.setPrefHeight(Main.SCREEN_HEIGHT - Main.MENU_HEIGHT);
+        parameter_bar.setMaxHeight(Main.SCREEN_HEIGHT - Main.MENU_HEIGHT);
+        for (Node child : parameter_bar.getChildren()) {
+            if (child instanceof VBox) {
+                ((VBox) child).setPadding(new javafx.geometry.Insets(Main.SIDEBAR_PADDING, Main.SIDEBAR_PADDING,
+                        Main.SIDEBAR_PADDING, Main.SIDEBAR_PADDING));
+                ((VBox) child).setAlignment(Pos.TOP_CENTER);
+            }
+            else if (child instanceof Button) {
+                ((Button) child).setPadding(new javafx.geometry.Insets(Main.SIDEBAR_PADDING, Main.SIDEBAR_PADDING,
+                        Main.SIDEBAR_PADDING, Main.SIDEBAR_PADDING));
+            }
+        }
+        top_menu.setPrefWidth(Main.SCREEN_WIDTH);
+        top_menu.setMaxWidth(Main.SCREEN_WIDTH);
+        top_menu.setPrefHeight(Main.MENU_HEIGHT);
+        top_menu.setMaxHeight(Main.MENU_HEIGHT);
+        tray.setPrefHeight(Main.TRAY_HEIGHT);
+        tray.setMaxHeight(Main.TRAY_HEIGHT);
+        overlay.setPrefHeight(Main.SIM_HEIGHT);
+        overlay.setMaxHeight(Main.SIM_HEIGHT);
+        overlay.setPrefWidth(Main.SIM_WIDTH);
+        overlay.setMaxWidth(Main.SIM_WIDTH);
+        simulation_shadow.setPrefHeight(Main.SIM_HEIGHT);
+        simulation_shadow.setMaxHeight(Main.SIM_HEIGHT);
+        simulation_shadow.setPrefWidth(Main.SIM_WIDTH);
+        simulation_shadow.setMaxWidth(Main.SIM_WIDTH);
+        main.setPrefHeight(Main.SIM_HEIGHT+Main.TRAY_HEIGHT);
+        main.setMaxHeight(Main.SIM_HEIGHT+Main.TRAY_HEIGHT);
+        main.setPrefWidth(Main.SIM_WIDTH);
+        main.setMaxWidth(Main.SIM_WIDTH);
+        main_layout.setAlignment(main_layout.getCenter(), Pos.TOP_LEFT);
 
         // Setup the updater thread
         sim_graphic_update_thread = new UIUpdater(new UIUpdaterCallbacks() {
@@ -114,9 +160,9 @@ public class MainController implements Initializable {
         genetic_simulator = new GeneticsSimulator(cell_radius, sim_lifespan, board_pop_size, mut_rate,
             genetics_gens, new SimulationCallbacks() {
                     @Override
-                    public void finished(CellBoard cell_board) {
+                    public void finished(CellBoard cell_board, int fitness) {
                         Platform.runLater(() -> {
-                            loadToSimulator(cell_board);
+                            loadToSimulator(cell_board, fitness);
                         });
                     }
 
@@ -135,8 +181,9 @@ public class MainController implements Initializable {
     /**
      * Load the given CellBoard into the simulation.
      * @param cell_board the CellBoard that you would like to load
+     * @param fitness the fitness of the board for the simulation lifespan it was produced under
      */
-    protected synchronized void loadToSimulator(CellBoard cell_board) {
+    protected synchronized void loadToSimulator(CellBoard cell_board, int fitness) {
         synchronized (sim_graphic_update_thread) {
             if (!sim_graphic_update_thread.isPaused()) {
                 sim_graphic_update_thread.pause();
@@ -145,7 +192,7 @@ public class MainController implements Initializable {
         initialBoard = cell_board.copy();
         sim = cell_board.copy();
         Main.setLabel(fitness_label,
-                "Fitness: "+Simulation.simulatedFitness(sim, DEFAULT_SIMULATION_LIFESPAN));
+                "Fitness: "+fitness);
         displayNext();
     }
 
@@ -158,13 +205,11 @@ public class MainController implements Initializable {
 
         if (file != null) {
             CellBoard tmp = loadBoard(file);
-            loadToSimulator(tmp);
+            // TODO: 7/12/16 Update to show the saved fitness and simulation lifespan
+            loadToSimulator(tmp, 0);
         }
     }
 
-    // TODO: 7/9/16 Update so the fitness is loaded in from the file
-    // TODO: 7/9/16 Save as a binary file so that it is less likely to be tampered with? 
-    // TODO: 7/9/16 Update to be prepared to fail at loading the file
     // @effect: load in the file and change the initial board to the one loaded from the file
     protected synchronized CellBoard loadBoard(File file) {
         CellBoard cellBoard = new CellBoard();
@@ -175,7 +220,7 @@ public class MainController implements Initializable {
             String[] tempArray;
             while(scan.hasNext()) {
                 temp = scan.next();
-                // TODO: 7/5/16 Update to not be affected by whitespace if it doesn't already
+                // TODO: 7/5/16 Update to not be affected by whitespace if it isn't already
                 tempArray = temp.split(",");
                 cellBoard.addCell(new Point(Integer.parseInt(tempArray[0]), Integer.parseInt(tempArray[1])));
             }
@@ -186,7 +231,6 @@ public class MainController implements Initializable {
         return cellBoard;
     }
 
-    // TODO: 7/9/16 Update the file format so that the fitness is stored
     // @effect: save the cell board to a file within a folder where the application resides; Note: file is deleted if it already exists
     protected synchronized void saveBoard(CellBoard cellBoard, String name) {
         // Create the writer to save the board

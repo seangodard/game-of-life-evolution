@@ -7,7 +7,7 @@ public interface SimulationCallbacks {
     /**
      * @param cell_board Respond the the finishing of a CellBoard
      */
-    void finished(CellBoard cell_board);
+    void finished(CellBoard cell_board, int fitness);
 
     /**
      * @param percentage Respond to progress being made on a simulation. The value should be between 0 and 1.
