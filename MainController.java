@@ -2,7 +2,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.*;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -61,7 +60,7 @@ public class MainController implements Initializable {
         Point[] optimal5x5Points = {new Point(-2,-2), new Point(-2,0), new Point(-2,2), new Point(0,-2), new Point(0,2),
                 new Point(2,-2), new Point(2,0), new Point(-2,-1), new Point(-2,1), new Point(0,1), new Point(2,-1),
                 new Point(-1,1), new Point(1,1), new Point(-1,0), new Point(-1,2)};
-        HashSet<Point> optimal5x5 = new HashSet<Point>();
+        HashSet<Point> optimal5x5 = new HashSet<>();
         for (Point point : optimal5x5Points) {
             optimal5x5.add(point);
         }
@@ -191,8 +190,9 @@ public class MainController implements Initializable {
         }
         initialBoard = cell_board.copy();
         sim = cell_board.copy();
+        // TODO: 7/13/16 Update to correct new fitness
         Main.setLabel(fitness_label,
-                "Fitness: "+fitness);
+                "Fitness: 6708");
         displayNext();
     }
 
@@ -205,7 +205,7 @@ public class MainController implements Initializable {
 
         if (file != null) {
             CellBoard tmp = loadBoard(file);
-            // TODO: 7/12/16 Update to show the saved fitness and simulation lifespan
+            // TODO: 7/13/16 Update to be the file fitness
             loadToSimulator(tmp, 0);
         }
     }
@@ -253,7 +253,7 @@ public class MainController implements Initializable {
      */
     protected void displayNext() {
         Main.setSimulationImage(simulation_image, sim);
-        sim = Simulation.updateCells(sim);
+        sim = Simulation.updateCells(sim).getBoard();
     }
 
     /**

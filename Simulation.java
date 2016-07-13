@@ -1,20 +1,22 @@
-// Author: Sean Godard
-// Purpose: to hold the methods used to simulate the genetics algorithm and the rules of 
-//			Conway's Game of Life
-// References:
-// 	-http://stackoverflow.com/questions/7206442/printing-all-possible-subsets-of-a-list -> Petar Minchev
+/**
+ * Holds the methods used to simulate the genetics algorithm and the rules of Conway's Game of Life
+ * @author Sean Godard
+ * @references
+ *  -http://stackoverflow.com/questions/7206442/printing-all-possible-subsets-of-a-list -> Petar Minchev
+ */
 
 import java.awt.Point;
 import java.util.HashSet;
 import java.util.Random;
 
 public final class Simulation {
-	// Variables
 	private static Random rand = new Random();
 
-	// @param cellStartRadius: the area that the cells must start within
-	// @param maxSimulationIterations: the maximum number of loops to test the fitness within
-	// @return: the optimal placement of cells within that radius and upper simulation runs bound
+    /**
+     * @param cellStartRadius the area that the cells must start within
+     * @param maxSimulationIterations the maximum number of loops to test the fitness within
+     * @return the optimal placement of cells within that radius and upper simulation runs bound
+     */
 	public static CellBoard bruteForceBest(int cellStartRadius, int maxSimulationIterations) {
 		CellBoard bestCellBoard = null;
 		int bestFitness = 0;
@@ -58,21 +60,25 @@ public final class Simulation {
 			if (i%1000 == 0) System.out.println(i); // Can delete, just to watch progress
 		}
 		return bestCellBoard; // return the optimal
-	}	
+	}
 
-	// @purpose: update the cell data for the next step in the simulation following the rules
-	//	1. Any live cell with fewer than two live neighbors dies, as if caused by under-population.
-	//	2. Any live cell with two or three live neighbors live on to the next generation. 
-	//	3. Any live cell with more than three live neighbors dies, as if by overcrowding. 
-	//	4. Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
-	// @return newLivingCells: a HashSet<Point> of the living cells for the next simulation step
-	public static CellBoard updateCells(CellBoard oldLivingCells) {
-		CellBoard newLivingCells = oldLivingCells.copy();
-		CellBoard adjDeadCells = new CellBoard();
+    /**
+     * Update the cell data for the next step in the simulation following the rules:
+     *  1. Any live cell with fewer than two live neighbors dies, as if caused by under-population.
+     *  2. Any live cell with two or three live neighbors live on to the next generation.
+     *  3. Any live cell with more than three live neighbors dies, as if by overcrowding.
+     *  4. Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+     * @param old_board the old board
+     * @return a new CellBoard containing the updated cells
+     */
+	public static UpdatedCellPair updateCells(CellBoard old_board) {
+		CellBoard new_board = old_board.copy();
+		CellBoard adj_dead_cells = new CellBoard();
 
 		Point[] neighboringPoints;
 		int livingNeighbors = 0;
-		HashSet<Point> cellPoints = oldLivingCells.getCells();
+		int total_new_cells = 0;
+		HashSet<Point> cellPoints = old_board.getCells();
 
 		// Checking rules 1-3 for live cells
 		for (Point cell : cellPoints) {
@@ -81,59 +87,61 @@ public final class Simulation {
 
 			// getting the number of living cells and tracking nearby dead cells to use later
 			for (Point neighbor : neighboringPoints) {
-				if (oldLivingCells.contains(neighbor)) livingNeighbors +=1;
-				else adjDeadCells.addCell(neighbor);				
+				if (old_board.contains(neighbor)) livingNeighbors +=1;
+				else adj_dead_cells.addCell(neighbor);
 			}
 
 			// Removes the cell from the next generation if it died by rule 1 or 3
-			if (livingNeighbors < 2 || livingNeighbors > 3) newLivingCells.removeCell(cell);
+			if (livingNeighbors < 2 || livingNeighbors > 3) new_board.removeCell(cell);
 		}
 
 		// Checking rule 4
-		for (Point deadCell : adjDeadCells.getCells()) {
+		for (Point deadCell : adj_dead_cells.getCells()) {
 			neighboringPoints = getNeighboringPoints(deadCell);
 			livingNeighbors = 0;
 
 			// get the number of adjacent living cells to this dead cell
 			for (Point neighbor : neighboringPoints) {
-				if (oldLivingCells.contains(neighbor)) livingNeighbors +=1;			
+				if (old_board.contains(neighbor)) livingNeighbors +=1;
 			}
 
 			// Add the cell as a living cell to the next generation if it follows rule 4
-			if (livingNeighbors == 3) newLivingCells.addCell(deadCell);
+			if (livingNeighbors == 3) {
+				new_board.addCell(deadCell);
+				total_new_cells++;
+			}
 		}
-		return newLivingCells;
+		return new UpdatedCellPair(new_board, total_new_cells);
 	}
 
-    // @param cellBoard: an initial cellBoard to determine the fitness of
-	// @param maxSimulationIterations: the maximum number of 
-	// @return fitness: the total number of new cells generated by this initial board within the limit
-	public static int simulatedFitness(CellBoard initialBoard, int maxSimulationIterations) {
+    /**
+     * @param initial_board an initial cellBoard to determine the fitness of
+     * @param maxSimulationIterations the maximum number of
+     * @return the total number of new cells generated by this initial board within the limit
+     */
+	public static int simulatedFitness(CellBoard initial_board, int maxSimulationIterations) {
 		int fitness = 0;
-		CellBoard oldBoard = initialBoard.copy();
-		CellBoard newBoard;
-		CellBoard tempSet;
+		CellBoard old_board = initial_board;
+		CellBoard new_board;
 
 		for (int i = 0; i < maxSimulationIterations; i++) {
-			if (oldBoard.isEmpty()) {
+			if (old_board.isEmpty()) {
 				break;
 			}
 
-			tempSet = updateCells(oldBoard);
-			newBoard = tempSet.copy();
-
-			// compare the old board to the new board and add the amount of new cells to the fitness
-			tempSet.removeAll(oldBoard.getCells());
-			fitness += tempSet.size();
-
-			oldBoard = newBoard;
+			UpdatedCellPair tmp = updateCells(old_board);
+			new_board = tmp.getBoard();
+			fitness += tmp.getNumNewCells();
+			old_board = new_board;
 		}
 
 		return fitness;
 	}
 
-	// @param cellPoint: the point of a cell location
-	// @return neighborCells: points array of neighboring cell points (later will be judged to be living/dead)
+    /**
+     * @param cellPoint the point of a cell location
+     * @return points array of neighboring cell points (later will be judged to be living/dead)
+     */
 	private static Point[] getNeighboringPoints(Point cellPoint) {
 		Point neighborCells[] = new Point[8];
 		int shifts[] = {-1,0,1};

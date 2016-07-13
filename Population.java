@@ -51,8 +51,7 @@ public class Population {
 		if (rand) {
 			CellBoard tmp;
 			while (!isFull()) {
-				tmp = new CellBoard(cell_start_radius);
-				add(tmp);
+				add(new CellBoard(cell_start_radius));
 			}
 		}
 	}
