@@ -6,6 +6,7 @@
  */
 
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -62,6 +63,7 @@ public final class Simulation {
 		return bestCellBoard; // return the optimal
 	}
 
+    // TODO: 7/13/16 Optimize
     /**
      * Update the cell data for the next step in the simulation following the rules:
      *  1. Any live cell with fewer than two live neighbors dies, as if caused by under-population.
@@ -73,22 +75,28 @@ public final class Simulation {
      */
 	public static UpdatedCellPair updateCells(CellBoard old_board) {
 		CellBoard new_board = old_board.copy();
-		CellBoard adj_dead_cells = new CellBoard();
+		HashMap<Point, Integer> adj_dead_cells = new HashMap<>();
 
-		Point[] neighboringPoints;
-		int livingNeighbors = 0;
+		Point[] neighboring_points;
 		int total_new_cells = 0;
 		HashSet<Point> cellPoints = old_board.getCells();
 
 		// Checking rules 1-3 for live cells
 		for (Point cell : cellPoints) {
-			neighboringPoints = getNeighboringPoints(cell);
-			livingNeighbors = 0;
+			neighboring_points = getNeighboringPoints(cell);
+			int livingNeighbors = 0;
 
 			// getting the number of living cells and tracking nearby dead cells to use later
-			for (Point neighbor : neighboringPoints) {
+			for (Point neighbor : neighboring_points) {
 				if (old_board.contains(neighbor)) livingNeighbors +=1;
-				else adj_dead_cells.addCell(neighbor);
+				else {
+                    if (adj_dead_cells.containsKey(neighbor)) {
+                        adj_dead_cells.put(neighbor, adj_dead_cells.get(neighbor) + 1);
+                    }
+                    else {
+                        adj_dead_cells.put(neighbor, 1);
+                    }
+                }
 			}
 
 			// Removes the cell from the next generation if it died by rule 1 or 3
@@ -96,17 +104,9 @@ public final class Simulation {
 		}
 
 		// Checking rule 4
-		for (Point deadCell : adj_dead_cells.getCells()) {
-			neighboringPoints = getNeighboringPoints(deadCell);
-			livingNeighbors = 0;
-
-			// get the number of adjacent living cells to this dead cell
-			for (Point neighbor : neighboringPoints) {
-				if (old_board.contains(neighbor)) livingNeighbors +=1;
-			}
-
+		for (Point deadCell : adj_dead_cells.keySet()) {
 			// Add the cell as a living cell to the next generation if it follows rule 4
-			if (livingNeighbors == 3) {
+			if (adj_dead_cells.get(deadCell) == 3) {
 				new_board.addCell(deadCell);
 				total_new_cells++;
 			}

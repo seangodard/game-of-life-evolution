@@ -78,13 +78,6 @@ public class CellBoard {
 	public boolean isEmpty() { return cells.isEmpty(); }
 
     /**
-     * Remove all of the given cells from this cell set.
-     * @param cell_set the set of cells to remove from this set
-     * @return true if the set changed as a result of this call
-     */
-	public boolean removeAll(HashSet<Point> cell_set) { return cells.removeAll(cell_set); }
-
-    /**
      * Add the given cell point to this cell and expanding the radius if it is exceeded.
      * @param cell the point of a living cell to add to this board
      */
@@ -158,7 +151,7 @@ public class CellBoard {
      * @return the child CellBoard of these two parents
      */
 	public CellBoard cross(CellBoard other_parent) {
-		assert (this.cell_radius != other_parent.getCellRadius());
+		assert (this.cell_radius == other_parent.getCellRadius());
 
 		CellBoard child = new CellBoard(this.cell_radius);
 
