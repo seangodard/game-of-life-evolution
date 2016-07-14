@@ -131,9 +131,8 @@ public class MainController implements Initializable {
     protected void simulationClicked() {
         synchronized (sim_graphic_update_thread) {
             if (sim_graphic_update_thread.isPaused()) {
-                    sim_graphic_update_thread.cont();
-                    sim_graphic_update_thread.notify();
-                }
+                sim_graphic_update_thread.cont();
+            }
             else {
                 sim_graphic_update_thread.pause();
                 sim = initialBoard;
@@ -153,11 +152,13 @@ public class MainController implements Initializable {
         int board_pop_size = (int) ((Slider) (board_pop_slider.getChildren().get(0))).getValue();
         double mut_rate = ((Slider) (mut_rate_slider.getChildren().get(0))).getValue();
         int genetics_gens = (int) ((Slider) (sim_gen_slider.getChildren().get(0))).getValue();
+        // TODO: 7/14/16 Update to retrieve from sliders
+        int num_workers = 4;
 
         // Run the simulation on another thread
         if (genetic_simulator != null) { genetic_simulator.done(); }
         genetic_simulator = new GeneticsSimulator(cell_radius, sim_lifespan, board_pop_size, mut_rate,
-            genetics_gens, new SimulationCallbacks() {
+            genetics_gens, num_workers, new SimulationCallbacks() {
                     @Override
                     public void finished(CellBoard cell_board, int fitness) {
                         Platform.runLater(() -> {
@@ -174,6 +175,7 @@ public class MainController implements Initializable {
                 }
         );
         genetic_thread = new Thread(genetic_simulator);
+        genetic_thread.setName("Genetic Simulator");
         genetic_thread.start();
     }
 
@@ -190,9 +192,8 @@ public class MainController implements Initializable {
         }
         initialBoard = cell_board.copy();
         sim = cell_board.copy();
-        // TODO: 7/13/16 Update to correct new fitness
         Main.setLabel(fitness_label,
-                "Fitness: 6708");
+                "Fitness: "+fitness);
         displayNext();
     }
 
@@ -264,7 +265,6 @@ public class MainController implements Initializable {
             synchronized (sim_graphic_update_thread) {
                 if (sim_graphic_update_thread.isPaused()) {
                     sim_graphic_update_thread.cont();
-                    sim_graphic_update_thread.notify();
                 }
                 sim_graphic_update_thread.done();
                 try {sim_graphic_update_thread.join();} catch (InterruptedException e) {e.printStackTrace();}

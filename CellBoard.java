@@ -4,12 +4,10 @@
  */
 
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Consumer;
 
-public class CellBoard {
+public class CellBoard implements Iterable<Point> {
 	private static Random rand = new Random();
 	private HashSet<Point> cells = new HashSet<>();
 	private int cell_radius = 0;
@@ -147,7 +145,7 @@ public class CellBoard {
 
     /**
      * @param other_parent a CellBoard to cross with this one
-     *     Prerequisite: the two boards have the same radius
+     * @prerequisite: the two boards have the same radius
      * @return the child CellBoard of these two parents
      */
 	public CellBoard cross(CellBoard other_parent) {
@@ -214,5 +212,10 @@ public class CellBoard {
 		HashSet<Point> copiedCellSet = new HashSet<>();
 		copiedCellSet.addAll(cells);			
 		return new CellBoard(copiedCellSet, cell_radius);
+	}
+
+	@Override
+	public Iterator<Point> iterator() {
+		return cells.iterator();
 	}
 }

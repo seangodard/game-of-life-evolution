@@ -48,7 +48,8 @@ public class Population {
 		this(max_size, sim_lifespan);
         this.cell_start_radius = cell_start_radius;
 
-		if (rand) {
+        // TODO: 7/14/16 Update so this can be multithreaded as well?
+        if (rand) {
 			CellBoard tmp;
 			while (!isFull()) {
 				add(new CellBoard(cell_start_radius));
@@ -76,7 +77,7 @@ public class Population {
 		if (isFull()) return false;
 		else {
 			population[size] = cell_board;
-			fitness[size] = Simulation.simulatedFitness(cell_board, sim_lifespan);
+			this.fitness[size] = Simulation.simulatedFitness(cell_board, sim_lifespan);
 			size++;
 			is_updated = false;
 			return true;
@@ -84,12 +85,41 @@ public class Population {
 	}
 
     /**
+     * Add the cell to the population along with the fitness of that board
+     * @param cell_board a cell set to add to the population.
+     *     Precondition: must have the same size as the rest of the population
+     * @param fitness the fitness of the given CellBoard
+     * @return whether or not the cell_board was added to the population
+     */
+    public boolean add(CellBoard cell_board, int fitness) {
+        if (isFull()) return false;
+        else {
+            population[size] = cell_board;
+            this.fitness[size] = fitness;
+            size++;
+            is_updated = false;
+            return true;
+        }
+    }
+
+    /**
+     * Updates the fitness probabilities for the current boards in the population. This function must be called before
+     *  calling the selectByFitness() function if CellBoards have been added to the population.
+     */
+    public synchronized boolean updateFitnessProbabilities() {
+        if (!is_updated) {
+            updateProbArray();
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @return a parent board (higher probability given to boards with a higher fitness)
+     * @prerequisite the fitness probabilities must have been updated since the last board was added
      */
 	public CellBoard selectByFitness() {
-		// update the probabilities if they are not up to date
-		if (!is_updated) updateProbArray();
-
+        assert (is_updated);
 		return prob_selection_array.get(rand.nextInt(prob_selection_array.size()));
 	}
 
@@ -120,11 +150,11 @@ public class Population {
      * @return the fittest CellBoard in the population
      */
 	public CellBoard fittest() {
-		int bestIndex = 0;
+		int best_index = 0;
 		for (int i = 0; i < size; i++) {
-			if (fitness[i] > fitness[bestIndex]) bestIndex = i;
+			if (fitness[i] > fitness[best_index]) best_index = i;
 		}
-		return population[bestIndex];
+		return population[best_index];
 	}
 
     // TODO: 7/6/16 SpeedUp Algorithm
@@ -132,11 +162,11 @@ public class Population {
      * @return the fittest CellBoard in the population
      */
 	public int fittestFitness() {
-		int bestIndex = 0;
+		int best_index = 0;
 		for (int i = 0; i < size; i++) {
-			if (fitness[i] > fitness[bestIndex]) bestIndex = i;
+			if (fitness[i] > fitness[best_index]) best_index = i;
 		}
-		return fitness[bestIndex];
+		return fitness[best_index];
 	}
 
     /**

@@ -46,7 +46,10 @@ public class UIUpdater extends Thread {
     /**
      * Let the thread know to resume its execution.
      */
-    public synchronized void cont() { this.paused = false; }
+    public synchronized void cont() {
+        this.paused = false;
+        this.notify();
+    }
 
     /**
      * @return If the thread is set to paused

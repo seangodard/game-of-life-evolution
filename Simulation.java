@@ -63,7 +63,6 @@ public final class Simulation {
 		return bestCellBoard; // return the optimal
 	}
 
-    // TODO: 7/13/16 Optimize
     /**
      * Update the cell data for the next step in the simulation following the rules:
      *  1. Any live cell with fewer than two live neighbors dies, as if caused by under-population.
@@ -79,10 +78,9 @@ public final class Simulation {
 
 		Point[] neighboring_points;
 		int total_new_cells = 0;
-		HashSet<Point> cellPoints = old_board.getCells();
 
 		// Checking rules 1-3 for live cells
-		for (Point cell : cellPoints) {
+		for (Point cell : old_board) {
 			neighboring_points = getNeighboringPoints(cell);
 			int livingNeighbors = 0;
 
