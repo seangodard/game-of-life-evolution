@@ -57,6 +57,13 @@
                     <Label text="250"></Label>
                 </HBox>
             </VBox>
+            <VBox>
+                <Label text="Number of Threads:"></Label>
+                <HBox fx:id="num_threads_slider">
+                    <Slider majorTickUnit="1" blockIncrement="1"></Slider>
+                    <Label></Label>
+                </HBox>
+            </VBox>
             <Button text="Compute Genetic Best!" onAction="#computeGeneticsBest"></Button>
         </VBox>
     </left>

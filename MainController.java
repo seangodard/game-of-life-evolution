@@ -33,6 +33,7 @@ public class MainController implements Initializable {
     @FXML protected HBox board_pop_slider;
     @FXML protected HBox mut_rate_slider;
     @FXML protected HBox sim_gen_slider;
+    @FXML protected HBox num_threads_slider;
     @FXML protected ImageView simulation_image;
     @FXML protected VBox simulation_shadow;
     @FXML protected VBox tray;
@@ -75,6 +76,14 @@ public class MainController implements Initializable {
         Main.initializeSlider(board_pop_slider, false);
         Main.initializeSlider(mut_rate_slider, true);
         Main.initializeSlider(sim_gen_slider, false);
+        Main.initializeSlider(num_threads_slider, false);
+        // Set up the thread slider
+        Slider thread_slider = ((Slider) num_threads_slider.getChildren().get(0));
+        thread_slider.setMin(1);
+        int max_threads = Runtime.getRuntime().availableProcessors();
+        thread_slider.setMax(max_threads);
+        thread_slider.setValue(max_threads);
+        ((Label) num_threads_slider.getChildren().get(1)).setText(""+max_threads);
 
         // Set the start sizes for the layout
         parameter_bar.setPrefWidth(Main.SIDEBAR_WIDTH);

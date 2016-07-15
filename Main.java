@@ -51,7 +51,6 @@ public class Main extends Application {
     protected static int SIM_WIDTH = CELL_SIZE * NUM_CELLS_DISPLAY, SIM_HEIGHT = CELL_SIZE * NUM_CELLS_DISPLAY;
 
     private static Color CELL_COLOR = new Color(0, 160,0);
-//    private static Color BACKGROUND_COLOR = new Color(245,245,245);
     private static Color BACKGROUND_COLOR = new Color(248, 248, 248);
     protected static int SIDEBAR_WIDTH = 250;
     protected static int SIDEBAR_PADDING = 14;
@@ -93,7 +92,6 @@ public class Main extends Application {
         Scene s = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
 		this.stage.setScene(s);
 		this.stage.show();
-
     }
 
     /**
