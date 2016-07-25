@@ -28,6 +28,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
@@ -42,6 +43,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class Main extends Application {
+    // Set to true to turn on debug messages such as stack trace
+    protected static final boolean IS_DEBUG = true;
+
 	protected static Stage stage;
 
     protected static FXMLLoader loader;
@@ -95,19 +99,47 @@ public class Main extends Application {
     }
 
     /**
-     * Display a file chooser dialog
+     * Displays an error message pop-up box to the user.
+     * @param title the title of the error message box
+     * @param body the body of the error message box
+     */
+    protected synchronized static void showError(String title, String body) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setContentText(body);
+        alert.showAndWait();
+    }
+
+    /**
+     * Display a file chooser dialog for selecting a file to load.
      * @return the file that was selected
      */
     protected static File showFileChooseDialog() {
         FileChooser file_chooser = new FileChooser();
 
-        file_chooser.setTitle("Choose Initial Board");
+        file_chooser.setTitle("Choose Game of Life Board");
         file_chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         file_chooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("TXT", "*.txt")
+                new FileChooser.ExtensionFilter("EJC", "*.ejc")
         );
 
         return file_chooser.showOpenDialog(stage);
+    }
+
+    /**
+     * Display a window for a user to name and specify where to save the current game of life board.
+     * @return the filepath and name of where the user would like to save to
+     */
+    protected static File showSaveFileChooseDialog() {
+        FileChooser file_chooser = new FileChooser();
+
+        file_chooser.setTitle("Save Game of Life Board");
+        file_chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        file_chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("EJC", "*.ejc")
+        );
+
+        return file_chooser.showSaveDialog(stage);
     }
 
     /**
@@ -216,7 +248,7 @@ public class Main extends Application {
 	 */
 	@Override
 	public void stop() {
-        try { super.stop(); } catch (Exception e) { e.printStackTrace(); }
+        try { super.stop(); } catch (Exception e) { if (Main.IS_DEBUG) { e.printStackTrace(); } }
         main_controller.stop();
         Platform.exit();
         System.exit(0);

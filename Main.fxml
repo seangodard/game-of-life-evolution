@@ -16,7 +16,8 @@
     <top>
         <MenuBar fx:id="top_menu">
             <Menu text="File">
-                <MenuItem text="Open File...     " onAction="#openFile"></MenuItem>
+                <MenuItem styleClass="first_menu_item" text="Open...     " onAction="#openBoard"></MenuItem>
+                <MenuItem styleClass="last_menu_item" text="Save...    " onAction="#saveBoard"></MenuItem>
             </Menu>
         </MenuBar>
     </top>

@@ -25,11 +25,14 @@ public class UIUpdater extends Thread {
                 try {
                     synchronized (this) {  wait();  }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    if (Main.IS_DEBUG) { e.printStackTrace(); }
                 }
             }
             callbacks.showNext();
-            try { this.sleep(FRAME_DELAY);} catch (InterruptedException e) {e.printStackTrace();}
+            try { this.sleep(FRAME_DELAY);}
+            catch (InterruptedException e) {
+                if (Main.IS_DEBUG) { e.printStackTrace(); }
+            }
 		}
 	}
 

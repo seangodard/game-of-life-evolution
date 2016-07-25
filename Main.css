@@ -25,11 +25,11 @@
     -fx-font-size: 30px;
 }
 
-#tray *, #parameter_bar *, #top_menu *{
+#tray *, #parameter_bar *, #top_menu *, .dialog-pane *{
     -fx-text-fill: #FFFFFF;
 }
 
-#tray, #parameter_bar, #top_menu, .context-menu {
+#tray, #parameter_bar, #top_menu, .context-menu, .dialog-pane {
     -fx-background-color: #444444;
 }
 
@@ -81,14 +81,34 @@ Button:hover {
     -fx-background-insets: 0, 0 0 1 0, 1 1 2 1;
 }
 
-MenuBar {
-    -fx-padding: 0 0 0 10px;
-    -fx-alignment: center-left;
+.menu {
+    -fx-padding: 6px;
+}
+
+.menu:hover, .menu-item:hover {
+    -fx-background-color: #3561a3;
 }
 
 .menu-item {
-    -fx-padding: 3 10 3 15;
-    -fx-border-color: #FFFFFF;
-    -fx-border: 1 1 1 1;
+    -fx-padding: 4 110 4 10;
+    -fx-border-color: rgba(255,255,255,.4);
+    -fx-border-width: 0 1 0 1;
 }
 
+.first_menu_item {
+    -fx-border-width: 1 1 0 1;
+}
+
+.last_menu_item {
+    -fx-border-width: 0 1 1 1;
+}
+
+.dialog-pane {
+    -fx-padding: 15;
+}
+
+.dialog-pane .button {
+    -fx-background-color: #FF0000;
+    -fx-alignment: center;
+    -fx-padding: 5;
+}

@@ -31,10 +31,10 @@ public class GeneticsSimWorker implements Runnable {
                     synchronized (this) {
                         wait();
                     }
-                } catch (InterruptedException e) { e.printStackTrace(); }
+                } catch (InterruptedException e) { if (Main.IS_DEBUG) { e.printStackTrace(); } }
             }
 
-            // Note: we catch the exception here because sometimes the thread temporarily outlives the population?
+            // Note: catch the exception here since sometimes the thread shortly outlives the population
             try {
                 CellBoard p1 = callbacks.selectByFitness();
                 CellBoard p2 = callbacks.selectByFitness();
@@ -45,8 +45,7 @@ public class GeneticsSimWorker implements Runnable {
                 current_generation = callbacks.add(child, Simulation.simulatedFitness(child, simulation_lifespan),
                         current_generation);
             } catch (Exception e) {
-                System.err.println("caught");
-                e.printStackTrace();
+                if (Main.IS_DEBUG) { e.printStackTrace(); }
             }
         }
     }

@@ -53,6 +53,7 @@ public class GeneticsSimulator implements Runnable {
     @Override
     public void run() {
         callbacks.progress(0);
+        double start_time = System.currentTimeMillis();
 
         // Initialize and start the worker threads
         GeneticsSimWorker workers[] = new GeneticsSimWorker[num_workers];
@@ -75,7 +76,7 @@ public class GeneticsSimulator implements Runnable {
             worker_threads[i].start();
         }
 
-        try { semaphore.acquire(); } catch (InterruptedException e) { e.printStackTrace(); }
+        try { semaphore.acquire(); } catch (InterruptedException e) { if (Main.IS_DEBUG) { e.printStackTrace(); } }
 
         for (current_generation = 0; current_generation < genetics_generations && !DONE; ++current_generation) {
             population.updateFitnessProbabilities();
@@ -102,8 +103,8 @@ public class GeneticsSimulator implements Runnable {
                 synchronized (this) {
                     wait();
                 }
-            } catch (InterruptedException e) { e.printStackTrace(); }
-            try { semaphore.acquire(); } catch (InterruptedException e) { e.printStackTrace(); }
+            } catch (InterruptedException e) { if (Main.IS_DEBUG) { e.printStackTrace(); } }
+            try { semaphore.acquire(); } catch (InterruptedException e) { if (Main.IS_DEBUG) { e.printStackTrace(); } }
 
             // Pause any running workers
             for (GeneticsSimWorker worker : workers) {
@@ -121,7 +122,8 @@ public class GeneticsSimulator implements Runnable {
 
         // Only return the value if the simulation completed
         if (!DONE) {
-            callbacks.finished(population.fittest(), population.fittestFitness());
+            double end_time = System.currentTimeMillis();
+            callbacks.finished(population.fittest(), population.fittestFitness(), end_time - start_time);
             callbacks.progress(1);
         }
 
@@ -135,7 +137,7 @@ public class GeneticsSimulator implements Runnable {
             }
         }
         for (Thread worker : worker_threads) {
-            try { worker.join(); } catch (InterruptedException e) { e.printStackTrace(); }
+            try { worker.join(); } catch (InterruptedException e) { if (Main.IS_DEBUG) { e.printStackTrace(); } }
         }
     }
 
@@ -162,7 +164,7 @@ public class GeneticsSimulator implements Runnable {
             }
             semaphore.release();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            if (Main.IS_DEBUG) { e.printStackTrace(); }
             return -1;
         } finally {
             semaphore.release();
