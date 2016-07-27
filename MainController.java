@@ -100,22 +100,12 @@ public class MainController implements Initializable {
         thread_slider.setValue(max_threads);
         ((Label) num_threads_slider.getChildren().get(1)).setText(""+max_threads);
 
+        // TODO: 7/25/16 Move these to style sheet/fxml where possible
         // Set the start sizes for the layout
         parameter_bar.setPrefWidth(Main.SIDEBAR_WIDTH);
         parameter_bar.setMaxWidth(Main.SIDEBAR_WIDTH);
         parameter_bar.setPrefHeight(Main.SCREEN_HEIGHT - Main.MENU_HEIGHT);
         parameter_bar.setMaxHeight(Main.SCREEN_HEIGHT - Main.MENU_HEIGHT);
-        for (Node child : parameter_bar.getChildren()) {
-            if (child instanceof VBox) {
-                ((VBox) child).setPadding(new javafx.geometry.Insets(Main.SIDEBAR_PADDING, Main.SIDEBAR_PADDING,
-                        Main.SIDEBAR_PADDING, Main.SIDEBAR_PADDING));
-                ((VBox) child).setAlignment(Pos.TOP_CENTER);
-            }
-            else if (child instanceof Button) {
-                ((Button) child).setPadding(new javafx.geometry.Insets(Main.SIDEBAR_PADDING, Main.SIDEBAR_PADDING,
-                        Main.SIDEBAR_PADDING, Main.SIDEBAR_PADDING));
-            }
-        }
         top_menu.setPrefWidth(Main.SCREEN_WIDTH);
         top_menu.setMaxWidth(Main.SCREEN_WIDTH);
         top_menu.setPrefHeight(Main.MENU_HEIGHT);

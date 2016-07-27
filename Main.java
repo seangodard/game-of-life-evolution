@@ -34,6 +34,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -57,7 +58,8 @@ public class Main extends Application {
     private static Color CELL_COLOR = new Color(0, 160,0);
     private static Color BACKGROUND_COLOR = new Color(248, 248, 248);
     protected static int SIDEBAR_WIDTH = 250;
-    protected static int SIDEBAR_PADDING = 14;
+    protected static double SIDEBAR_SLIDER_PERCENT = .60;
+    protected static double SIDEBAR_LABEL_PERCENT = .17;
     protected static int TRAY_HEIGHT = 20;
     protected static int MENU_HEIGHT = 30;
 
@@ -185,8 +187,12 @@ public class Main extends Application {
         assert(slider_container.getChildren().get(0) instanceof Slider);
         assert(slider_container.getChildren().get(1) instanceof Label);
 
+        slider_container.setPrefWidth(SIDEBAR_WIDTH);
+
         Slider slider = (Slider) slider_container.getChildren().get(0);
         Label slider_label = (Label) slider_container.getChildren().get(1);
+        slider.setPrefWidth(SIDEBAR_SLIDER_PERCENT*SIDEBAR_WIDTH);
+        slider_label.setPrefWidth(SIDEBAR_LABEL_PERCENT*SIDEBAR_WIDTH);
 
         slider.valueProperty().addListener((observable, old_value, new_value) -> {
             if (floating) {

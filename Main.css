@@ -4,11 +4,28 @@
 
 #parameter_bar * {
     -fx-font-size: 12px;
+    -fx-alignment: top-left;
+}
+
+#parameter_bar .label {
+    -fx-padding: 0 0 8 0;
 }
 
 #parameter_bar {
     -fx-border-color: rgba(0,0,0,.4);
     -fx-border-width: 0 1 0 0;
+}
+
+#parameter_bar HBox {
+    -fx-padding: 0 0 0 40;
+}
+
+#parameter_bar VBox {
+    -fx-padding: 10 10 10 10;
+}
+
+#parameter_bar Button {
+    -fx-padding: 14 14 14 14;
 }
 
 #tray {
@@ -42,10 +59,6 @@ Slider .thumb {
 
 Slider .track {
     -fx-padding: 0.1em;
-}
-
-#parameter_bar * {
-    -fx-alignment: center;
 }
 
 Button, Slider .track {

@@ -5,7 +5,6 @@
 
 import java.awt.Point;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class CellBoard implements Iterable<Point> {
 	private static Random rand = new Random();
