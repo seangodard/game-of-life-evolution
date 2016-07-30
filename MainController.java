@@ -79,7 +79,7 @@ public class MainController implements Initializable {
         cell_radius = 2;
         board_width = 5;
         board_height = 5;
-        sim_lifespan = 250; // TODO: 7/25/16 Is this correct? It may have actually been 100...
+        sim_lifespan = 100; // TODO: 7/25/16 Is this correct? It may have actually been 250...
         milli_compute_time = -1; // TODO: 7/25/16 Update to be the time it took
         loaded_board_fitness = 6708;
         fitness_label.setText("Fitness: "+ loaded_board_fitness);
