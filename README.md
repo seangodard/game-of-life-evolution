@@ -57,12 +57,12 @@ solutions. Each of the parameters has the following meaning:
 > 	algorithm will use. This is limited by the number of CPUs Java detects on
 > 	your system. Beyond this limit performance may start to deteriorate.
 
-	As you will notice, each slider has a limited range that it can be
+As you will notice, each slider has a limited range that it can be
 set to. If you find that that the slider limits do not suit your needs, these
 can easily be modified by changing the sliders *min* and *max* attributes
 within the *Main.fxml* file. 
 
-	After the parameters are set, simply click the *Computer Genetic Best!*
+After the parameters are set, simply click the *Computer Genetic Best!*
 button. Once the computations are complete, the new board will automatically be
 set to the center so if you would like to save your current creation be sure to
 save it from within the file menu!
